@@ -1,0 +1,8 @@
+.firebase/
+__pycache__/
+downloads/
+*.exe
+GoogleCloudSDKInstaller.exe
+.env
+venv/
+.streamlit/

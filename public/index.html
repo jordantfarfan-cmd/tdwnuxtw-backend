@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDwnuXTw ® | Adquisidor Multiplataforma</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1c1a29 0%, #2b2b40 100%);
+            color: #ffffff;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            margin: 0; padding: 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #00d2ff; font-weight: 800; margin-bottom: 5px; font-size: 2.5rem; }
+        h3 { text-align: center; color: #ffffff; font-weight: 400; margin-top: 0; margin-bottom: 30px; font-size: 1.2rem; border-left: 2px solid rgba(255,255,255,0.2); border-right: 2px solid rgba(255,255,255,0.2); display: inline-block; padding: 0 15px; left: 50%; position: relative; transform: translateX(-50%); }
+        
+        .input-group { position: relative; margin-bottom: 30px; }
+        .input-group input {
+            width: 100%; padding: 15px 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px; color: white; font-size: 16px;
+            transition: all 0.3s;
+        }
+        .input-group input:focus { outline: none; border-color: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: center;
+            flex-wrap: wrap;
+        }
+        .thumb-col { flex: 0 0 150px; }
+        .thumb-col img { width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        .info-col { flex: 1; min-width: 250px; overflow: hidden; }
+        .title { font-weight: bold; font-size: 1.1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
+        .url { font-size: 0.8em; color: #00d2ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 10px; }
+        
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.8em; display: inline-block; }
+        .bg-youtube { background: #5a0a0a; border: 1px solid #ff0000; }
+        .bg-facebook { background: #0b1c3c; border: 1px solid #1877F2; }
+        .bg-tiktok { background: linear-gradient(135deg, #000, #111); border: 1px solid #00f2fe; }
+        
+        .controls-col { flex: 0 0 150px; display: flex; flex-direction: column; gap: 10px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 15px; }
+        .radio-group { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+        .radio-group label { display: block; font-size: 0.9em; cursor: pointer; margin-bottom: 5px; }
+        .radio-group label:last-child { margin-bottom: 0; }
+        
+        .action-col { flex: 0 0 200px; display: flex; flex-direction: column; gap: 10px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 15px; position: relative; }
+        select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; }
+        select option { background: #1c1a29; }
+        
+        .btn { background: #28a745; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 16px; width: 100%; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .btn:disabled { background: #555; cursor: not-allowed; animation: none; }
+        .btn-pulse { animation: blinking-green 1.5s infinite; }
+        
+        @keyframes blinking-green {
+            0% { box-shadow: 0 0 5px #28a745; }
+            50% { box-shadow: 0 0 20px #34ce57; background: #34ce57; }
+            100% { box-shadow: 0 0 5px #28a745; }
+        }
+
+        /* Overlay Logs */
+        .logs-wrapper { position: relative; height: 38px; width: 100%; z-index: 99; }
+        details { width: 100%; position: absolute; z-index: 100; }
+        summary { background: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; color: #00d2ff; cursor: pointer; list-style: none; height: 35px; display: flex; align-items: center; gap: 5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        summary::-webkit-details-marker { display: none; }
+        .logs-content { background: #1c1a29; border: 1px solid rgba(0, 210, 255, 0.5); border-radius: 6px; padding: 8px; max-height: 150px; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.8); margin-top: 2px; }
+        .log-entry { font-size: 0.7rem; color: #ccc; margin-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TDwnuXTw ®</h1>
+        <h3>Adquisidor de videos multiplataforma</h3>
+        
+        <div class="input-group">
+            <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #ccc;">🔗 Pega los enlaces aquí:</p>
+            <input type="text" id="urlInput" placeholder="https://..." onkeypress="if(event.key === 'Enter') addLink()">
+        </div>
+        
+        <div id="linksContainer"></div>
+    </div>
+
+    <script>
+        let links = [];
+
+        function getPlatformInfo(url) {
+            const u = url.toLowerCase();
+            if (u.includes('youtube.com') || u.includes('youtu.be')) return { class: 'bg-youtube', icon: '▶️', name: 'YouTube' };
+            if (u.includes('facebook.com') || u.includes('fb.watch') || u.includes('fb.com')) return { class: 'bg-facebook', icon: '📘', name: 'Facebook' };
+            if (u.includes('tiktok.com')) return { class: 'bg-tiktok', icon: '🎵', name: 'TikTok' };
+            return { class: 'bg-youtube', icon: '🌐', name: 'Web' }; // Default
+        }
+
+        async function addLink() {
+            const urlInput = document.getElementById('urlInput');
+            const url = urlInput.value.trim();
+            if(!url) return;
+            urlInput.value = "";
+
+            const id = Date.now();
+            const plat = getPlatformInfo(url);
+            
+            const linkData = {
+                id: id, url: url, title: "Cargando info...", thumb: "https://via.placeholder.com/150x100?text=Cargando", duration: "", plat: plat, state: "ready", logs: ["✅ Enlace capturado"]
+            };
+            links.push(linkData);
+            renderLinks();
+
+            try {
+                const res = await fetch('/api/info', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url: url, format: "Video", quality: "1080p" })
+                });
+                if(res.ok) {
+                    const info = await res.json();
+                    const index = links.findIndex(l => l.id === id);
+                    if(index !== -1) {
+                        links[index].title = info.title;
+                        links[index].thumb = info.thumbnail;
+                        links[index].logs.push("✅ Información extraída");
+                        renderLinks();
+                    }
+                }
+            } catch (e) { console.error("Error API Info", e); }
+        }
+
+        function toggleFormat(id, format) {
+            const index = links.findIndex(l => l.id === id);
+            if(index !== -1) {
+                links[index].format = format;
+                renderLinks();
+            }
+        }
+
+        async function processLink(id) {
+            const index = links.findIndex(l => l.id === id);
+            if(index === -1) return;
+            
+            const link = links[index];
+            link.state = "processing";
+            const format = document.querySelector(`input[name="fmt_${id}"]:checked`).value;
+            const quality = document.getElementById(`q_${id}`).value;
+            
+            link.logs.push("⚙️ Conectando con servidor en la nube...");
+            link.logs.push(`⚡ Solicitando ${format} en ${quality}`);
+            renderLinks();
+
+            // Pseudo-real-time feedback
+            let pseudoInterval = setInterval(() => {
+                const msgs = ["⚡ Analizando manifiestos", "⚡ Bypasseando protecciones", "⚡ Descargando fragmentos", "⚡ Uniendo con FFmpeg"];
+                link.logs.push(msgs[Math.floor(Math.random()*msgs.length)]);
+                renderLinks();
+            }, 8000);
+
+            try {
+                const res = await fetch('/api/download', {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url: link.url, format: format, quality: quality })
+                });
+                clearInterval(pseudoInterval);
+                
+                if(res.ok) {
+                    // Recibir archivo como blob
+                    const blob = await res.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    
+                    const contentDisposition = res.headers.get('Content-Disposition');
+                    let filename = `TDwnuXTw_Download.${format==='Video'?'mp4':'mp3'}`;
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                        if (filenameMatch && filenameMatch.length === 2) filename = filenameMatch[1];
+                    }
+
+                    link.state = "completed";
+                    link.downloadUrl = downloadUrl;
+                    link.filename = filename;
+                    link.logs.push("✅ Descarga finalizada (100%)");
+                } else {
+                    link.state = "ready";
+                    link.logs.push("❌ Error al procesar");
+                }
+            } catch (e) {
+                clearInterval(pseudoInterval);
+                link.state = "ready";
+                link.logs.push("⚠️ Falló conexión con servidor");
+            }
+            renderLinks();
+        }
+
+        function downloadFile(id) {
+            const link = links.find(l => l.id === id);
+            if(link && link.downloadUrl) {
+                const a = document.createElement('a');
+                a.href = link.downloadUrl;
+                a.download = link.filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            }
+        }
+
+        function renderLinks() {
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = "";
+            
+            links.forEach(link => {
+                const isVideo = link.format !== "Audio";
+                
+                let actionBtn = "";
+                if(link.state === "ready") {
+                    actionBtn = `<button class="btn btn-pulse" onclick="processLink(${link.id})">▶ Listo para procesar</button>`;
+                } else if(link.state === "processing") {
+                    actionBtn = `<button class="btn" disabled>⚙️ Procesando...</button>`;
+                } else if(link.state === "completed") {
+                    actionBtn = `<button class="btn" onclick="downloadFile(${link.id})">💾 Guardar</button>`;
+                }
+
+                const qualOptions = isVideo ? 
+                    `<option value="1080p">1080p</option><option value="720p">720p</option><option value="480p">480p</option>` : 
+                    `<option value="320 Kbps">320 Kbps</option><option value="256 Kbps">256 Kbps</option><option value="128 Kbps">128 Kbps</option>`;
+
+                const latestLog = link.logs[link.logs.length - 1];
+                const logEntries = link.logs.map(l => `<div class="log-entry">${l}</div>`).join('');
+
+                container.innerHTML += `
+                    <div class="card">
+                        <div class="thumb-col">
+                            <img src="${link.thumb}" alt="Thumbnail">
+                        </div>
+                        <div class="info-col">
+                            <div class="title">${link.title}</div>
+                            <div class="badge ${link.plat.class}">${link.plat.icon} ${link.plat.name}</div>
+                            <div class="url">${link.url}</div>
+                        </div>
+                        <div class="controls-col">
+                            <div class="radio-group">
+                                <label><input type="radio" name="fmt_${link.id}" value="Video" ${isVideo ? 'checked' : ''} onchange="toggleFormat(${link.id}, 'Video')"> 🔴 Video (MP4)</label>
+                                <label><input type="radio" name="fmt_${link.id}" value="Audio" ${!isVideo ? 'checked' : ''} onchange="toggleFormat(${link.id}, 'Audio')"> ⚪ Audio (MP3)</label>
+                            </div>
+                        </div>
+                        <div class="action-col">
+                            <div class="logs-wrapper">
+                                <details>
+                                    <summary>${latestLog}</summary>
+                                    <div class="logs-content">${logEntries}</div>
+                                </details>
+                            </div>
+                            ${actionBtn}
+                            <select id="q_${link.id}">${qualOptions}</select>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
