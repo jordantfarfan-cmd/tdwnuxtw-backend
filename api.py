@@ -6,18 +6,21 @@ import yt_dlp
 import os
 import time
 import threading
+import requests
+import urllib.parse
+import re
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 # Este archivo es el equivalente a app.py pero diseñado como un "Cerebro API" sin interfaz gráfica
 app = FastAPI(title="TDwnuXTw Backend API")
 
-app.mount("/public", StaticFiles(directory="public"), name="public")
-
-@app.get("/")
-def serve_index():
-    with open("public/index.html", "r", encoding="utf-8") as f:
-        return HTMLResponse(content=f.read())
+if os.path.exists("public"):
+    app.mount("/public", StaticFiles(directory="public"), name="public")
+    @app.get("/")
+    def serve_index():
+        with open("public/index.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,6 +29,27 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/api/debug/system")
+def get_system_info():
+    try:
+        with open('/proc/meminfo', 'r') as f:
+            lines = f.readlines()
+        
+        mem_total = 0
+        for line in lines:
+            if 'MemTotal' in line:
+                mem_total = int(line.split()[1]) / (1024 * 1024) # Convertir a GB
+                break
+        
+        return {
+            "status": "online",
+            "total_ram_gb": round(mem_total, 2),
+            "platform": "HuggingFace Spaces (Linux)",
+            "cpu_cores": os.cpu_count()
+        }
+    except Exception as e:
+        return {"error": str(e)}
 
 class DownloadRequest(BaseModel):
     url: str
@@ -102,12 +126,32 @@ def descargar_yt_dlp(opciones, dl_url):
 async def api_info(req: DownloadRequest):
     raw_url = req.url
     is_fb = is_facebook(raw_url)
-    ydl_opts = {'quiet': True}
+    
+    # Sanitizar URL si es Facebook
     if is_fb:
-        ydl_opts['http_headers'] = {'Sec-Fetch-Dest': 'video', 'Origin': 'https://www.facebook.com'}
-        if os.path.exists('temp_cookies.txt'): ydl_opts['cookiefile'] = 'temp_cookies.txt'
-    elif "youtube" in raw_url:
-        ydl_opts['extractor_args'] = {'youtube': {'player_client': ['android']}}
+        raw_url = sanitize_facebook_url(raw_url)
+        
+    ydl_opts = {
+        'quiet': True,
+        'no_warnings': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': False,
+        'no_color': True,
+        'extract_flat': False,
+    }
+    
+    if is_fb:
+        ydl_opts['http_headers'] = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36',
+            'Sec-Fetch-Dest': 'video', 
+            'Origin': 'https://www.facebook.com'
+        }
+    elif "youtube" in raw_url or "youtu.be" in raw_url:
+        ydl_opts['extractor_args'] = {'youtube': {'player_client': ['android', 'ios']}}
+    
+    # Usar cookies si existen (importante para evitar bloqueos)
+    if os.path.exists('temp_cookies.txt'):
+        ydl_opts['cookiefile'] = 'temp_cookies.txt'
     
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -115,10 +159,18 @@ async def api_info(req: DownloadRequest):
             return {
                 "title": info.get('title', 'Video Desconocido'),
                 "thumbnail": info.get('thumbnail', 'https://via.placeholder.com/150x100?text=No+Thumb'),
-                "duration": info.get('duration', 0)
+                "duration": info.get('duration', 0),
+                "status": "success"
             }
     except Exception as e:
-        return {"title": "Video retirado o protegido", "thumbnail": "https://via.placeholder.com/150x100?text=Error", "duration": 0}
+        print(f"Error en api_info: {str(e)}")
+        return {
+            "title": "Video protegido o enlace inválido", 
+            "thumbnail": "https://via.placeholder.com/150x100?text=Error", 
+            "duration": 0,
+            "status": "error",
+            "detail": str(e)
+        }
 
 @app.post("/api/download")
 async def api_download(req: DownloadRequest, bg_tasks: BackgroundTasks):
@@ -129,11 +181,17 @@ async def api_download(req: DownloadRequest, bg_tasks: BackgroundTasks):
     qual = req.quality
     is_fb = is_facebook(raw_url)
     
+    # Sanitizar URL upfront
+    if is_fb:
+        raw_url = sanitize_facebook_url(raw_url)
+    
     ydl_opts = {
         'outtmpl': f'downloads/%(title).50s_api.%(ext)s',
         'quiet': True,
+        'no_warnings': True,
         'noplaylist': True,
-        'http_headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0'}
+        'nocheckcertificate': True,
+        'http_headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36'}
     }
     
     if os.path.exists('temp_cookies.txt'):
@@ -151,26 +209,23 @@ async def api_download(req: DownloadRequest, bg_tasks: BackgroundTasks):
     try:
         if is_fb:
             ydl_opts['http_headers'].update({'Sec-Fetch-Dest': 'video', 'Origin': 'https://www.facebook.com'})
-        elif "youtube" in raw_url:
+        elif "youtube" in raw_url or "youtu.be" in raw_url:
             if 'http_headers' in ydl_opts: del ydl_opts['http_headers']
-            ydl_opts['extractor_args'] = {'youtube': {'player_client': ['android']}}
+            ydl_opts['extractor_args'] = {'youtube': {'player_client': ['android', 'ios']}}
             
+        # Nivel 1: Intento directo
         try:
             filename = descargar_yt_dlp(ydl_opts, raw_url)
         except Exception:
-            clean_url = sanitize_facebook_url(raw_url) if is_fb else raw_url
-            try:
-                if not is_fb and clean_url == raw_url: raise Exception()
-                filename = descargar_yt_dlp(ydl_opts, clean_url)
-            except:
-                filename = organic_scraper(clean_url, is_audio) if is_fb else None
-                if not filename:
-                    try:
-                        if not is_fb: raise Exception()
-                        filename = descargar_yt_dlp(ydl_opts, clean_url)
-                    except:
-                        raise HTTPException(status_code=500, detail="No se pudo descargar el video")
+            # Nivel 2: Scraper orgánico (solo para Facebook)
+            if is_fb:
+                filename = organic_scraper(raw_url, is_audio)
+            
+            if not filename:
+                raise HTTPException(status_code=500, detail="No se pudo procesar el video con los métodos disponibles")
+                
     except Exception as e:
+        print(f"Error en api_download: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
         
     if filename and os.path.exists(filename):

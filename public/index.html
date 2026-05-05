@@ -99,6 +99,8 @@
             return { class: 'bg-youtube', icon: '🌐', name: 'Web' }; // Default
         }
 
+        const BACKEND_URL = 'https://99a88a8a-tdwnuxtw-backend.hf.space';
+
         async function addLink() {
             const urlInput = document.getElementById('urlInput');
             const url = urlInput.value.trim();
@@ -115,21 +117,34 @@
             renderLinks();
 
             try {
-                const res = await fetch('/api/info', {
+                const res = await fetch(`${BACKEND_URL}/api/info`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ url: url, format: "Video", quality: "1080p" })
                 });
+                
+                const index = links.findIndex(l => l.id === id);
+                if(index === -1) return;
+
                 if(res.ok) {
                     const info = await res.json();
-                    const index = links.findIndex(l => l.id === id);
-                    if(index !== -1) {
-                        links[index].title = info.title;
-                        links[index].thumb = info.thumbnail;
-                        links[index].logs.push("✅ Información extraída");
-                        renderLinks();
-                    }
+                    links[index].title = info.title;
+                    links[index].thumb = info.thumbnail;
+                    links[index].logs.push(info.status === "error" ? "⚠️ Error en extracción" : "✅ Información extraída");
+                    renderLinks();
+                } else {
+                    links[index].title = "⚠️ Error de servidor (500)";
+                    links[index].logs.push("❌ El servidor no respondió correctamente");
+                    renderLinks();
                 }
-            } catch (e) { console.error("Error API Info", e); }
+            } catch (e) { 
+                console.error("Error API Info", e);
+                const index = links.findIndex(l => l.id === id);
+                if(index !== -1) {
+                    links[index].title = "⚠️ Error de conexión";
+                    links[index].logs.push("❌ No se pudo conectar con el servidor");
+                    renderLinks();
+                }
+            }
         }
 
         function toggleFormat(id, format) {
@@ -161,7 +176,7 @@
             }, 8000);
 
             try {
-                const res = await fetch('/api/download', {
+                const res = await fetch(`${BACKEND_URL}/api/download`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ url: link.url, format: format, quality: quality })
                 });
