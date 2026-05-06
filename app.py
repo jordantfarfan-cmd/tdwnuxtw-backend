@@ -92,12 +92,44 @@ st.markdown("""
     }
     
     /* Clases de plataformas para la URL */
-    .bg-youtube { background-color: #5a0a0a !important; border: 1px solid #ff0000; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
+    .bg-youtube { background-color: #5a0a0a !important; border: 1px solid #ff0000; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%; color: white !important; font-weight: normal !important;}
     .bg-facebook { background-color: #0b1c3c !important; border: 1px solid #1877F2; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
-    .bg-tiktok { background: linear-gradient(135deg, #000, #111) !important; border: 1px solid #00f2fe; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
+    .bg-tiktok { background-color: rgba(254, 46, 87, 0.15) !important; border: 1px solid #fe2e57 !important; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%; color: #2cf0e5 !important; }
     .bg-twitter { background-color: #0a0a0a !important; border: 1px solid #555; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
-    .bg-instagram { background: linear-gradient(135deg, #4a1c40, #5c2018) !important; border: 1px solid #fd1d1d; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
+    .bg-instagram { background-color: rgba(110, 77, 155, 0.15) !important; border: 1px solid #6e4d9b !important; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%; color: #ecaf4c !important; }
     .bg-other { background-color: #2a2a2a !important; border: 1px solid #777; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
+
+    /* Text Gradients for Platform Names */
+    .text-youtube {
+        background: linear-gradient(to right, #FF0000, #FFFFFF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.9em;
+    }
+    .text-facebook {
+        background: linear-gradient(to right, #1877F2, #00C6FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.9em;
+    }
+    .text-instagram {
+        background: linear-gradient(to right, #833AB4, #FD1D1D);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.9em;
+    }
+    .text-tiktok {
+        background: linear-gradient(to right, #00F2EA, #FF0050);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.9em;
+    }
+    .text-twitter {
+        background: linear-gradient(to right, #FFFFFF, #777777);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.9em;
+    }
 
     /* Líneas divisorias verticales (Gris Opaco Elegante) */
     div[data-testid="stHorizontalBlock"] > div:nth-child(2),
@@ -297,54 +329,81 @@ if 'input_url' not in st.session_state:
 
 def get_platform(url):
     u = url.lower()
-    if 'youtube.com' in u or 'youtu.be' in u: return 'youtube', '▶️'
-    if 'facebook.com' in u or 'fb.watch' in u or 'fb.com' in u: return 'facebook', '📘'
-    if 'twitter.com' in u or 'x.com' in u: return 'twitter', '🐦'
-    if 'tiktok.com' in u: return 'tiktok', '🎵'
-    if 'instagram.com' in u: return 'instagram', '📸'
-    return 'other', '🌐'
+    if 'youtube.com' in u or 'youtu.be' in u: return 'youtube', '▶️', 'text-youtube', 'YouTube'
+    if 'facebook.com' in u or 'fb.watch' in u or 'fb.com' in u: return 'facebook', '📘', 'text-facebook', 'Facebook'
+    if 'twitter.com' in u or 'x.com' in u: return 'twitter', '🐦', 'text-twitter', 'X'
+    if 'tiktok.com' in u: return 'tiktok', '🎵', 'text-tiktok', 'TikTok'
+    if 'instagram.com' in u: return 'instagram', '📸', 'text-instagram', 'Instagram'
+    return 'other', '🌐', '', 'Web'
 
 def add_link():
-    url = st.session_state.url_input_field.strip()
-    if url:
-        # Check if already exists
-        if not any(l['url'] == url for l in st.session_state.links):
-            plat, icon = get_platform(url)
-            # Try to get metadata
-            is_dead = False
-            try:
-                with yt_dlp.YoutubeDL({'quiet': True, 'extractor_args': {'youtube': {'player_client': ['android']}}}) as ydl:
-                    info = ydl.extract_info(url, download=False)
-                    title = info.get('title', 'Video Desconocido')
-                    thumb = info.get('thumbnail', 'https://via.placeholder.com/150x100?text=No+Thumb')
-                    duration = info.get('duration', 0)
-            except:
-                title = "Video retirado de la plataforma"
-                thumb = "https://via.placeholder.com/150x100?text=Retirado"
-                duration = 0
-                is_dead = True
-                
-            st.session_state.links.append({
-                'url': url,
-                'title': f"{icon} {title}",
-                'thumbnail': thumb,
-                'platform': plat,
-                'duration': duration,
-                'downloading': False,
-                'completed': False,
-                'is_dead': is_dead,
-                'ready_to_process': False,
-                'file_path': None,
-                'last_log': 'Listo para procesar' if not is_dead else '⚠️ Video no disponible',
-                'logs': ['✅ Enlace verificado y listo'] if not is_dead else ['❌ Error: El video no pudo ser extraído']
-            })
+    raw_text = st.session_state.url_input_field.strip()
+    if raw_text:
+        # Detectar múltiples URLs
+        import re
+        urls = re.split(r'[\s,]+', raw_text)
+        urls = [u.strip() for u in urls if u.strip().startswith('http')]
+        
+        for url in urls:
+            # Evitar duplicados
+            if not any(l['url'] == url for l in st.session_state.links):
+                plat, icon, t_class, p_name = get_platform(url)
+                # Intentar obtener metadata
+                is_dead = False
+                try:
+                    with yt_dlp.YoutubeDL({'quiet': True, 'extractor_args': {'youtube': {'player_client': ['android']}}}) as ydl:
+                        info = ydl.extract_info(url, download=False)
+                        title = info.get('title', 'Video Desconocido')
+                        desc = info.get('description', '')
+                        
+                        if plat == 'facebook':
+                            if title == 'Video' or not title or title == 'Video Desconocido':
+                                title = desc if desc else 'Video de Facebook'
+                            elif desc and len(desc) > len(title) and title in desc:
+                                title = desc
+                        elif plat == 'instagram':
+                            if desc:
+                                title = desc
+                            elif title.startswith('Video by'):
+                                title = title.replace('Video by', 'Video de Instagram de')
+                            elif title == 'Video':
+                                title = 'Video de Instagram'
+                                
+                        if title:
+                            title = title.replace('\n', ' ').replace('\r', ' ')
+
+                        thumb = info.get('thumbnail', 'https://via.placeholder.com/150x100?text=No+Thumb')
+                        duration = info.get('duration', 0)
+                except:
+                    title = "Video retirado de la plataforma"
+                    thumb = "https://via.placeholder.com/150x100?text=Retirado"
+                    duration = 0
+                    is_dead = True
+                    
+                st.session_state.links.append({
+                    'url': url,
+                    'title': title,
+                    'thumbnail': thumb,
+                    'platform': plat,
+                    'platform_name': p_name,
+                    'platform_icon': icon,
+                    'text_class': t_class,
+                    'duration': duration,
+                    'downloading': False,
+                    'completed': False,
+                    'is_dead': is_dead,
+                    'ready_to_process': False,
+                    'file_path': None,
+                    'last_log': 'Listo para procesar' if not is_dead else '⚠️ Video no disponible',
+                    'logs': ['✅ Enlace verificado y listo'] if not is_dead else ['❌ Error: El video no pudo ser extraído']
+                })
         st.session_state.url_input_field = ""
 
 # --- INTERFAZ ---
 st.title("TDwnuXTw ®")
 st.markdown("### | Adquisidor de videos multiplataforma")
 
-st.text_input("🔗 Pega los enlaces aquí:", key="url_input_field", on_change=add_link)
+st.text_area("🔗 Pega los enlaces aquí:", key="url_input_field", on_change=add_link, placeholder="https://...", height=68)
 
 if not os.path.exists('downloads'):
     os.makedirs('downloads')
@@ -353,9 +412,9 @@ if not os.path.exists('downloads'):
 platform_styles = {
     'youtube': {'bg': '#5a0a0a', 'border': '#ff0000'},
     'facebook': {'bg': '#0b1c3c', 'border': '#1877F2'},
-    'tiktok': {'bg': 'linear-gradient(135deg, #000, #111)', 'border': '#00f2fe'},
+    'tiktok': {'bg': 'rgba(254, 46, 87, 0.15)', 'border': '#fe2e57'},
     'twitter': {'bg': '#0a0a0a', 'border': '#555'},
-    'instagram': {'bg': 'linear-gradient(135deg, #4a1c40, #5c2018)', 'border': '#fd1d1d'},
+    'instagram': {'bg': 'rgba(110, 77, 155, 0.15)', 'border': '#6e4d9b'},
     'other': {'bg': '#2a2a2a', 'border': '#777'}
 }
 
@@ -396,8 +455,8 @@ for i, link_data in enumerate(st.session_state.links):
         fallback_img = "https://via.placeholder.com/150x100?text=%F0%9F%96%BC%EF%B8%8F"
         
         st.markdown(f"""
-            <div style="position: relative; height: 100px; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background-color: #0e1117;">
-                <img src="{link_data['thumbnail']}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null;this.src='{fallback_img}';">
+            <div style="position: relative; height: 100px; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05) 10px, transparent 10px, transparent 20px), #0e1117;">
+                <img src="{link_data['thumbnail']}" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.onerror=null;this.src='{fallback_img}';">
                 {dur_html}
             </div>
         """, unsafe_allow_html=True)
@@ -406,6 +465,9 @@ for i, link_data in enumerate(st.session_state.links):
         title_style = "font-style: italic; color: #aaa;" if link_data.get('is_dead') else "color: white;"
         st.markdown(f"""
             <div style="height: 100px; display: flex; flex-direction: column; justify-content: center;">
+                <div style="margin-bottom: 2px;">
+                    <span class="{link_data.get('text_class', '')}">{link_data.get('platform_icon', '')} {link_data.get('platform_name', '')}</span>
+                </div>
                 <div class="row-title" style="margin-bottom: 6px; {title_style}">{link_data['title']}</div>
                 <div class="{bg_class}">
                     <div class="row-url" style="margin-top: 0px;">{link_data['url']}</div>
@@ -533,7 +595,8 @@ for i, link_data in enumerate(st.session_state.links):
         else:
             q_val = qual.replace('p', '')
             ydl_opts.update({
-                'format': f'bestvideo[height<={q_val}][ext=mp4]+bestaudio[ext=m4a]/best[height<={q_val}][ext=mp4]/best', 
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+                'format_sort': [f'res:{q_val}', 'ext:mp4:m4a'],
                 'merge_output_format': 'mp4'
             })
             

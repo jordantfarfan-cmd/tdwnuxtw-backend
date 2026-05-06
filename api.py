@@ -9,7 +9,7 @@ import threading
 import requests
 import urllib.parse
 import re
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 # Este archivo es el equivalente a app.py pero diseñado como un "Cerebro API" sin interfaz gráfica
@@ -50,6 +50,19 @@ def get_system_info():
         }
     except Exception as e:
         return {"error": str(e)}
+
+@app.get("/api/proxy_image")
+def proxy_image(url: str):
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36',
+            'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+            'Referer': 'https://www.instagram.com/'
+        }
+        res = requests.get(url, headers=headers, timeout=10)
+        return Response(content=res.content, media_type=res.headers.get('Content-Type', 'image/jpeg'))
+    except Exception as e:
+        return Response(content=b"", media_type="image/jpeg", status_code=404)
 
 class DownloadRequest(BaseModel):
     url: str
@@ -156,9 +169,36 @@ async def api_info(req: DownloadRequest):
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(raw_url, download=False)
+            thumb = info.get('thumbnail', 'https://placehold.co/150x100/000000/FFFFFF/png?text=No+Thumb')
+            
+            # Proxy Instagram thumbnails to bypass CORS/Hotlink protection
+            if "instagram" in raw_url.lower() and thumb.startswith("http"):
+                thumb = f"/api/proxy_image?url={urllib.parse.quote(thumb)}"
+
+            title = info.get('title', 'Video Desconocido')
+            desc = info.get('description', '')
+            
+            if is_fb:
+                # Si FB devuelve algo genérico o vacío, usamos la descripción
+                if title == 'Video' or not title or title == 'Video Desconocido':
+                    title = desc if desc else 'Video de Facebook'
+                elif desc and len(desc) > len(title) and title in desc:
+                    title = desc
+            elif "instagram" in raw_url.lower():
+                if desc:
+                    title = desc
+                elif title.startswith('Video by'):
+                    title = title.replace('Video by', 'Video de Instagram de')
+                elif title == 'Video':
+                    title = 'Video de Instagram'
+
+            # Limpiar saltos de línea para mostrarlo en una sola línea
+            if title:
+                title = title.replace('\n', ' ').replace('\r', ' ')
+
             return {
-                "title": info.get('title', 'Video Desconocido'),
-                "thumbnail": info.get('thumbnail', 'https://via.placeholder.com/150x100?text=No+Thumb'),
+                "title": title,
+                "thumbnail": thumb,
                 "duration": info.get('duration', 0),
                 "status": "success"
             }
@@ -166,7 +206,7 @@ async def api_info(req: DownloadRequest):
         print(f"Error en api_info: {str(e)}")
         return {
             "title": "Video protegido o enlace inválido", 
-            "thumbnail": "https://via.placeholder.com/150x100?text=Error", 
+            "thumbnail": "https://placehold.co/150x100/000000/FFFFFF/png?text=Error", 
             "duration": 0,
             "status": "error",
             "detail": str(e)
@@ -202,7 +242,12 @@ async def api_download(req: DownloadRequest, bg_tasks: BackgroundTasks):
         ydl_opts.update({'format': 'bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': q_val}]})
     else:
         q_val = qual.replace('p', '')
-        ydl_opts.update({'format': f'bestvideo[height<={q_val}][ext=mp4]+bestaudio[ext=m4a]/best[height<={q_val}][ext=mp4]/best', 'merge_output_format': 'mp4'})
+        fmt_str = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+        ydl_opts.update({
+            'format': fmt_str,
+            'format_sort': [f'res:{q_val}', 'ext:mp4:m4a'],
+            'merge_output_format': 'mp4'
+        })
         
     filename = None
     

@@ -1,169 +1,1024 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TDwnuXTw ® | Adquisidor Multiplataforma</title>
+
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             background: linear-gradient(135deg, #1c1a29 0%, #2b2b40 100%);
             color: #ffffff;
             font-family: 'Inter', 'Segoe UI', sans-serif;
-            margin: 0; padding: 20px;
+            margin: 0;
+            padding: 20px;
             min-height: 100vh;
         }
-        .container { max-width: 1000px; margin: 0 auto; }
-        h1 { text-align: center; color: #00d2ff; font-weight: 800; margin-bottom: 5px; font-size: 2.5rem; }
-        h3 { text-align: center; color: #ffffff; font-weight: 400; margin-top: 0; margin-bottom: 30px; font-size: 1.2rem; border-left: 2px solid rgba(255,255,255,0.2); border-right: 2px solid rgba(255,255,255,0.2); display: inline-block; padding: 0 15px; left: 50%; position: relative; transform: translateX(-50%); }
-        
-        .input-group { position: relative; margin-bottom: 30px; }
-        .input-group input {
-            width: 100%; padding: 15px 20px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px; color: white; font-size: 16px;
+
+        .platform-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .platform-logo {
+            width: 18px;
+            height: 18px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Scrollbar Global Estilizado */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
             transition: all 0.3s;
         }
-        .input-group input:focus { outline: none; border-color: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
-        
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 210, 255, 0.4);
+        }
+
+        .main-layout {
+            display: flex;
+            justify-content: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar-ads {
+            flex: 0 0 160px;
+            min-width: 160px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .ad-placeholder {
+            width: 100%;
+            min-height: 600px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1000px;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00d2ff;
+            font-weight: 800;
+            margin-bottom: 5px;
+            font-size: 2.5rem;
+        }
+
+        h3 {
+            text-align: center;
+            color: #ffffff;
+            font-weight: 400;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 0 15px;
+            left: 50%;
+            position: relative;
+            transform: translateX(-50%);
+        }
+
+        .input-group {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #urlInput {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #00f2fe;
+            font-size: 0.95em;
+            font-family: 'Inter', sans-serif;
+            resize: none;
+            overflow-y: hidden;
+            min-height: 45px;
+            height: 45px;
+            line-height: 1.4;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        #urlInput:focus {
+            outline: none;
+            border-color: #00f2fe;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
         .card {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 15px; margin-bottom: 20px;
-            display: flex; gap: 15px; align-items: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
             flex-wrap: wrap;
-        }
-        .thumb-col { flex: 0 0 150px; }
-        .thumb-col img { width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
-        
-        .info-col { flex: 1; min-width: 250px; overflow: hidden; }
-        .title { font-weight: bold; font-size: 1.1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px; }
-        .url { font-size: 0.8em; color: #00d2ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 10px; }
-        
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.8em; display: inline-block; }
-        .bg-youtube { background: #5a0a0a; border: 1px solid #ff0000; }
-        .bg-facebook { background: #0b1c3c; border: 1px solid #1877F2; }
-        .bg-tiktok { background: linear-gradient(135deg, #000, #111); border: 1px solid #00f2fe; }
-        
-        .controls-col { flex: 0 0 150px; display: flex; flex-direction: column; gap: 10px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 15px; }
-        .radio-group { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
-        .radio-group label { display: block; font-size: 0.9em; cursor: pointer; margin-bottom: 5px; }
-        .radio-group label:last-child { margin-bottom: 0; }
-        
-        .action-col { flex: 0 0 200px; display: flex; flex-direction: column; gap: 10px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 15px; position: relative; }
-        select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; }
-        select option { background: #1c1a29; }
-        
-        .btn { background: #28a745; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 16px; width: 100%; cursor: pointer; transition: 0.3s; font-weight: bold; }
-        .btn:disabled { background: #555; cursor: not-allowed; animation: none; }
-        .btn-pulse { animation: blinking-green 1.5s infinite; }
-        
-        @keyframes blinking-green {
-            0% { box-shadow: 0 0 5px #28a745; }
-            50% { box-shadow: 0 0 20px #34ce57; background: #34ce57; }
-            100% { box-shadow: 0 0 5px #28a745; }
+            position: relative;
+            z-index: 1;
         }
 
-        /* Overlay Logs */
-        .logs-wrapper { position: relative; height: 38px; width: 100%; z-index: 99; }
-        details { width: 100%; position: absolute; z-index: 100; }
-        summary { background: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; color: #00d2ff; cursor: pointer; list-style: none; height: 35px; display: flex; align-items: center; gap: 5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        summary::-webkit-details-marker { display: none; }
-        .logs-content { background: #1c1a29; border: 1px solid rgba(0, 210, 255, 0.5); border-radius: 6px; padding: 8px; max-height: 150px; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.8); margin-top: 2px; }
-        .log-entry { font-size: 0.7rem; color: #ccc; margin-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 2px; }
+        .card:has(.custom-dropdown.open) {
+            z-index: 9999;
+        }
+
+        .thumb-col {
+            flex: 0 0 150px;
+            position: relative;
+            height: 85px;
+            display: flex;
+            justify-content: center;
+            background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05) 10px, transparent 10px, transparent 20px), #0e1117;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .thumb-col img {
+            height: 100%;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .duration-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .info-col {
+            flex: 1;
+            min-width: 150px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title {
+            font-weight: bold;
+            font-size: 1.1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 8px;
+        }
+
+        .url {
+            font-size: 0.75em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            width: fit-content;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .platform-tag {
+            font-size: 0.75em;
+            color: #ccc;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bg-youtube {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ffffff !important;
+            font-weight: normal !important;
+        }
+
+        .bg-facebook {
+            background: rgba(24, 119, 242, 0.2);
+            border: 1px solid #1877F2;
+            color: #1877F2 !important;
+        }
+
+        .bg-tiktok {
+            background: rgba(254, 46, 87, 0.15);
+            border: 1px solid #fe2e57;
+            color: #2cf0e5 !important;
+        }
+
+        .bg-instagram {
+            background: rgba(110, 77, 155, 0.15);
+            border: 1px solid #6e4d9b;
+            color: #ecaf4c !important;
+        }
+
+        .bg-x {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #ffffff;
+            color: #ffffff !important;
+        }
+
+        /* Text Gradients for Platform Names */
+        .text-youtube {
+            background: linear-gradient(to right, #FF0000, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-facebook {
+            background: linear-gradient(to right, #1877F2, #00C6FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-instagram {
+            background: linear-gradient(to right, #833AB4, #FD1D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-tiktok {
+            background: linear-gradient(to right, #00F2EA, #FF0050);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-x {
+            background: linear-gradient(to right, #FFFFFF, #777777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .controls-col {
+            flex: 0 0 280px;
+            width: 280px;
+            min-width: 280px;
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            padding-left: 15px;
+            overflow: visible;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 8px;
+            overflow: visible;
+        }
+
+        .option-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .ladder-step {
+            display: flex;
+            align-items: center;
+            max-width: 0;
+            opacity: 0;
+            transform: translateX(-15px);
+            transition: max-width 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .option-row.deployed .ladder-step {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            overflow: visible;
+        }
+
+        .ladder-step.step-1 { transition-delay: 0s; margin-left: -10px; }
+        .ladder-step.step-2 { transition-delay: 0.1s; }
+        .ladder-step.step-3 { transition-delay: 0.2s; }
+
+        .option-row.deployed .ladder-step.step-1 { margin-left: -1px; max-width: 300px; }
+        .option-row.deployed .ladder-step.step-2 { max-width: 100px; }
+        .option-row.deployed .ladder-step.step-3 { max-width: 150px; }
+
+        .process-badge {
+            font-size: 9px;
+            color: #fff;
+            background: rgba(40, 167, 69, 0.2);
+            padding: 0 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: 20px;
+            border: 1px solid rgba(40, 167, 69, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-left: 8px;
+        }
+        .process-badge:hover {
+            background: rgba(40, 167, 69, 0.5);
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+        }
+        .process-badge.save {
+            background: rgba(0, 123, 255, 0.2);
+            border-color: rgba(0, 123, 255, 0.4);
+            color: #66b2ff;
+        }
+        .process-badge.save:hover {
+            background: rgba(0, 123, 255, 0.5);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+            color: #fff;
+        }
+        .process-badge.processing {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .process-badge.error {
+            background: rgba(220, 53, 69, 0.2);
+            border-color: rgba(220, 53, 69, 0.4);
+            color: #ff4d4d;
+        }
+        .process-badge.error:hover {
+            background: rgba(220, 53, 69, 0.4);
+            color: #fff;
+        }
+
+        .size-badge {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .option-row.deployed .size-badge {
+            opacity: 1;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+            padding: 0;
+            border: none;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            height: 38px;
+            /* Altura fija para coincidir con select */
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            user-select: none;
+            width: 140px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        /* Solo cuando se despliega la calidad: El botón se 'abre' para fusionarse */
+        .option-row.deployed label {
+            border-radius: 10px 0 0 10px;
+            border-right: none;
+        }
+
+        .radio-group label:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .radio-group input {
+            display: none;
+        }
+
+        /* Video Selected State */
+        .radio-group label:has(input[value="Video"]:checked) {
+            background: rgba(255, 0, 0, 0.15);
+            color: #ff4d4d;
+            border-color: rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);
+            font-weight: 600;
+        }
+
+        /* Audio Selected State */
+        .radio-group label:has(input[value="Audio"]:checked) {
+            background: rgba(0, 210, 255, 0.15);
+            color: #00d2ff;
+            border-color: rgba(0, 210, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
+            font-weight: 600;
+        }
+
+        .radio-icon {
+            font-size: 1.1em;
+            margin-right: 8px;
+        }
+
+        .radio-text {
+            flex: 1;
+        }
+
+        .radio-ext {
+            font-size: 0.8em;
+            opacity: 0.5;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .action-col {
+            flex: 0 0 160px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            padding-left: 12px;
+            justify-content: center;
+        }
+
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 110px;
+            height: 38px;
+            z-index: 20;
+        }
+
+        .custom-dropdown.open {
+            z-index: 1000;
+        }
+
+        .dropdown-trigger {
+            height: 38px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 10.5px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        .dropdown-trigger::after {
+            content: '▼';
+            font-size: 8px;
+            margin-left: 8px;
+            transition: transform 0.3s;
+            opacity: 0.6;
+        }
+
+        .custom-dropdown.no-arrow .dropdown-trigger {
+            cursor: default;
+        }
+
+        .custom-dropdown.no-arrow .dropdown-trigger::after {
+            display: none;
+        }
+
+        .custom-dropdown.open .dropdown-trigger::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background: #252438;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+        }
+
+        .custom-dropdown.open .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-item {
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 10.5px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 210, 255, 0.1);
+            color: #00d2ff;
+        }
+
+        .option-row[data-type="Video"].deployed .dropdown-trigger {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: rgba(255, 0, 0, 0.3);
+            color: #ff4d4d;
+        }
+
+        .option-row[data-type="Audio"].deployed .dropdown-trigger {
+            background: rgba(0, 210, 255, 0.1);
+            border-color: rgba(0, 210, 255, 0.3);
+            color: #00d2ff;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 7px 10px;
+            font-size: 12px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            animation: none;
+        }
+
+        .btn-pulse {
+            animation: blinking-green 1.5s infinite;
+        }
+
+        @keyframes blinking-green {
+            0% {
+                box-shadow: 0 0 5px #28a745;
+            }
+
+            50% {
+                box-shadow: 0 0 20px #34ce57;
+                background: #34ce57;
+            }
+
+            100% {
+                box-shadow: 0 0 5px #28a745;
+            }
+        }
+
+        .logs-wrapper {
+            position: absolute;
+            top: 12px;
+            right: 480px;
+            width: auto;
+            min-width: 120px;
+            max-width: 210px;
+            z-index: 99;
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        details {
+            width: 100%;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .btn-refresh-info {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #ff4d4d;
+            border-radius: 4px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 10px;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            padding: 0;
+        }
+        .btn-refresh-info:hover {
+            background: rgba(220, 53, 69, 0.3);
+            box-shadow: 0 0 5px rgba(220, 53, 69, 0.4);
+        }
+
+        summary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 0 8px;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            list-style: none;
+            height: 20px;
+            line-height: 18px;
+            /* Altura de línea para centrar texto verticalmente */
+            display: block;
+            /* Necesario para text-overflow: ellipsis */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: all 0.3s;
+        }
+
+        /* Estado verde suave para descarga finalizada */
+        .logs-wrapper.is-completed summary {
+            background: rgba(40, 167, 69, 0.1) !important;
+            border-color: rgba(40, 167, 69, 0.3) !important;
+            color: #4ade80 !important;
+        }
+
+        summary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.8);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .logs-content {
+            background: #1c1a29;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            margin-top: 2px;
+        }
+
+        /* Scrollbar específico para logs */
+        .logs-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .logs-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .logs-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .logs-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .log-entry {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 2px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1px;
+        }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>TDwnuXTw ®</h1>
-        <h3>Adquisidor de videos multiplataforma</h3>
-        
-        <div class="input-group">
-            <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #ccc;">🔗 Pega los enlaces aquí:</p>
-            <input type="text" id="urlInput" placeholder="https://..." onkeypress="if(event.key === 'Enter') addLink()">
+    <div class="main-layout">
+        <div class="sidebar-ads">
+            <div class="ad-placeholder">
+                <span style="margin-bottom: 10px;">Publicidad Adsterra</span>
+                <p style="font-size: 8px; opacity: 0.5; margin: 0 10px; text-align: center;">Pega aquí tu código de banner (160x600)</p>
+                
+                <!-- ESPACIO PARA TU CÓDIGO DE ADSTERRA -->
+                <div id="adsterra-banner">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '57216caf2adec9b4b95f617aea56f46b',
+                            'format' : 'iframe',
+                            'height' : 600,
+                            'width' : 160,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="https://www.highperformanceformat.com/57216caf2adec9b4b95f617aea56f46b/invoke.js"></script>
+                </div>
+            </div>
         </div>
-        
-        <div id="linksContainer"></div>
+
+        <div class="container">
+            <h1>TDwnuXTw ®</h1>
+            <h3>Adquisidor de videos multiplataforma</h3>
+
+            <div id="linksContainer"></div>
+
+            <div class="input-group">
+                <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #ccc;">🔗 Pega tus enlaces aquí (uno o varios):</p>
+                <textarea id="urlInput" placeholder="https://..." oninput="autoResize(this)"
+                    onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); addLink(); }"></textarea>
+            </div>
+        </div>
     </div>
 
     <script>
         let links = [];
 
-        function getPlatformInfo(url) {
-            const u = url.toLowerCase();
-            if (u.includes('youtube.com') || u.includes('youtu.be')) return { class: 'bg-youtube', icon: '▶️', name: 'YouTube' };
-            if (u.includes('facebook.com') || u.includes('fb.watch') || u.includes('fb.com')) return { class: 'bg-facebook', icon: '📘', name: 'Facebook' };
-            if (u.includes('tiktok.com')) return { class: 'bg-tiktok', icon: '🎵', name: 'TikTok' };
-            return { class: 'bg-youtube', icon: '🌐', name: 'Web' }; // Default
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
         }
 
-        const BACKEND_URL = 'https://99a88a8a-tdwnuxtw-backend.hf.space';
+        // Manejar el pegado para separar links visualmente con saltos de línea
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('urlInput');
+            input.addEventListener('paste', function (e) {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text');
+                const formatted = text.split(/[\s,]+/).filter(u => u.trim()).join('\n');
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + formatted + this.value.substring(end);
+                autoResize(this);
+            });
+        });
+
+        function getPlatformInfo(url) {
+            const u = url.toLowerCase();
+            if (u.includes('youtube.com') || u.includes('youtu.be')) return { class: 'bg-youtube', textClass: 'text-youtube', icon: 'https://i.imgur.com/xKR2e4J.png', name: 'YouTube' };
+            if (u.includes('facebook.com') || u.includes('fb.watch') || u.includes('fb.com')) return { class: 'bg-facebook', textClass: 'text-facebook', icon: 'https://i.imgur.com/KfqJ0SE.png', name: 'Facebook' };
+            if (u.includes('instagram.com')) return { class: 'bg-instagram', textClass: 'text-instagram', icon: 'https://i.imgur.com/dRcDOwS.png', name: 'Instagram' };
+            if (u.includes('tiktok.com')) return { class: 'bg-tiktok', textClass: 'text-tiktok', icon: 'https://i.imgur.com/LFzL7OA.png', name: 'TikTok' };
+            if (u.includes('twitter.com') || u.includes('x.com')) return { class: 'bg-x', textClass: 'text-x', icon: 'https://i.imgur.com/QVitgr8.png', name: 'X' };
+            return { class: 'bg-youtube', textClass: '', icon: '🌐', name: 'Web' }; // Default
+        }
+
+        // Detectar si estamos en local o en producción
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const BACKEND_URL = isLocal ? 'http://127.0.0.1:8000' : 'https://tdwnuxtw-backend.onrender.com';
+
+        function formatDuration(sec) {
+            if (!sec) return "";
+            const hrs = Math.floor(sec / 3600);
+            const mins = Math.floor((sec % 3600) / 60);
+            const secs = Math.floor(sec % 60);
+            let ret = "";
+            if (hrs > 0) ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+            ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+            ret += "" + secs;
+            return ret;
+        }
+
+        function estimateSize(durationSecs, format, quality, platform = '') {
+            if (!durationSecs || durationSecs <= 0) return "";
+
+            let bitrateKbps = 0;
+            if (format === 'Audio') {
+                if (quality.includes('320')) bitrateKbps = 320;
+                else if (quality.includes('256')) bitrateKbps = 256;
+                else if (quality.includes('128')) bitrateKbps = 128;
+                else bitrateKbps = 128;
+            } else {
+                const p = platform.toLowerCase();
+                const isMobile = p.includes('tiktok') || p.includes('instagram') || p.includes('facebook');
+
+                // Reducir la estimación significativamente para redes sociales que comprimen el video
+                const base1080 = isMobile ? 1800 : 3500;
+                const base720 = isMobile ? 1200 : 2000;
+                const base480 = isMobile ? 600 : 1000;
+                const base360 = isMobile ? 400 : 700;
+                const base240 = isMobile ? 250 : 400;
+
+                if (quality.includes('1080p') || quality.includes('HD')) bitrateKbps = base1080;
+                else if (quality.includes('720p')) bitrateKbps = base720;
+                else if (quality.includes('480p')) bitrateKbps = base480;
+                else if (quality.includes('360p')) bitrateKbps = base360;
+                else if (quality.includes('240p')) bitrateKbps = base240;
+                else if (quality.includes('144p')) bitrateKbps = 150;
+                else bitrateKbps = base720;
+            }
+
+            let sizeMB = (bitrateKbps * durationSecs) / 8192;
+            if (sizeMB < 1) return (sizeMB * 1024).toFixed(0) + " KB";
+            if (sizeMB > 1024) return (sizeMB / 1024).toFixed(2) + " GB";
+            return sizeMB.toFixed(1) + " MB";
+        }
 
         async function addLink() {
             const urlInput = document.getElementById('urlInput');
-            const url = urlInput.value.trim();
-            if(!url) return;
+            const rawText = urlInput.value.trim();
+            if (!rawText) return;
             urlInput.value = "";
+            autoResize(urlInput);
 
-            const id = Date.now();
-            const plat = getPlatformInfo(url);
-            
-            const linkData = {
-                id: id, url: url, title: "Cargando info...", thumb: "https://via.placeholder.com/150x100?text=Cargando", duration: "", plat: plat, state: "ready", logs: ["✅ Enlace capturado"]
-            };
-            links.push(linkData);
-            renderLinks();
+            // Separar por espacios, comas o saltos de línea y filtrar solo URLs válidas
+            const urls = rawText.split(/[\s,]+/).filter(u => u.startsWith('http'));
+
+            if (urls.length === 0) return;
+
+            for (const url of urls) {
+                // Evitar duplicados en la lista actual
+                if (links.find(l => l.url === url)) continue;
+
+                const id = Date.now() + Math.random();
+                const plat = getPlatformInfo(url);
+
+                const linkData = {
+                    id: id, url: url, title: "Cargando info...", thumb: "https://placehold.co/150x100/000000/FFFFFF/png?text=Cargando", duration: "", rawDuration: 0, plat: plat, state: "ready", logs: ["✅ Enlace capturado"],
+                    format: null, // No pre-seleccionado
+                    vidQuality: null,
+                    audQuality: null
+                };
+                links.push(linkData);
+                renderLinks();
+
+                // Scroll automático
+                setTimeout(() => {
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }, 100);
+
+                // Obtener info en segundo plano para cada link
+                fetchLinkInfo(id);
+            }
+        }
+
+        async function fetchLinkInfo(id) {
+            const index = links.findIndex(l => l.id === id);
+            if (index === -1) return;
+            const link = links[index];
+
+            if (link.infoError) {
+                link.infoError = false;
+                link.title = "Cargando info...";
+                link.thumb = "https://placehold.co/150x100/000000/FFFFFF/png?text=Cargando";
+                link.logs.push("⏳ Reintentando extracción...");
+                renderLinks();
+            }
 
             try {
                 const res = await fetch(`${BACKEND_URL}/api/info`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ url: url, format: "Video", quality: "1080p" })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: link.url, format: "Video", quality: "1080p" })
                 });
-                
-                const index = links.findIndex(l => l.id === id);
-                if(index === -1) return;
 
-                if(res.ok) {
+                if (res.ok) {
                     const info = await res.json();
-                    links[index].title = info.title;
-                    links[index].thumb = info.thumbnail;
-                    links[index].logs.push(info.status === "error" ? "⚠️ Error en extracción" : "✅ Información extraída");
+                    link.title = info.title;
+                    if (info.thumbnail && info.thumbnail.startsWith('/api/')) {
+                        link.thumb = BACKEND_URL + info.thumbnail;
+                    } else {
+                        link.thumb = info.thumbnail;
+                    }
+                    link.duration = formatDuration(info.duration);
+                    link.rawDuration = info.duration || 0;
+                    if (info.status === "error") {
+                        link.infoError = true;
+                        link.logs.push("⚠️ Error en extracción");
+                    } else {
+                        link.infoError = false;
+                        link.logs.push("✅ Información extraída");
+                    }
                     renderLinks();
                 } else {
-                    links[index].title = "⚠️ Error de servidor (500)";
-                    links[index].logs.push("❌ El servidor no respondió correctamente");
+                    link.infoError = true;
+                    link.title = "⚠️ Error de servidor (500)";
+                    link.logs.push("❌ El servidor no respondió correctamente");
                     renderLinks();
                 }
-            } catch (e) { 
+            } catch (e) {
                 console.error("Error API Info", e);
-                const index = links.findIndex(l => l.id === id);
-                if(index !== -1) {
-                    links[index].title = "⚠️ Error de conexión";
-                    links[index].logs.push("❌ No se pudo conectar con el servidor");
-                    renderLinks();
-                }
+                link.infoError = true;
+                link.title = "⚠️ Error de conexión";
+                link.logs.push("❌ No se pudo conectar con el servidor");
+                renderLinks();
             }
         }
 
         function toggleFormat(id, format) {
             const index = links.findIndex(l => l.id === id);
-            if(index !== -1) {
+            if (index !== -1) {
+                // Si ya estaba seleccionado el mismo, no hacemos nada
+                if (links[index].format === format) return;
+
                 links[index].format = format;
+                links[index].isNewSelection = true; // Marcar para animar solo este cambio
+                
+                if (links[index].state === 'completed' || links[index].state === 'error') {
+                    links[index].state = 'ready';
+                    links[index].downloadUrl = null;
+                }
+
                 renderLinks();
             }
         }
 
         async function processLink(id) {
             const index = links.findIndex(l => l.id === id);
-            if(index === -1) return;
-            
+            if (index === -1) return;
+
             const link = links[index];
             link.state = "processing";
             const format = document.querySelector(`input[name="fmt_${id}"]:checked`).value;
-            const quality = document.getElementById(`q_${id}`).value;
-            
+            const isVideo = format === 'Video';
+
+            // Leer del dropdown personalizado
+            const trigger = isVideo ?
+                document.querySelector(`.card[data-id="${id}"] .option-row[data-type="Video"] .dropdown-trigger`) :
+                document.querySelector(`.card[data-id="${id}"] .option-row[data-type="Audio"] .dropdown-trigger`);
+
+            const quality = trigger.dataset.value;
+
             link.logs.push("⚙️ Conectando con servidor en la nube...");
             link.logs.push(`⚡ Solicitando ${format} en ${quality}`);
             renderLinks();
@@ -171,24 +1026,24 @@
             // Pseudo-real-time feedback
             let pseudoInterval = setInterval(() => {
                 const msgs = ["⚡ Analizando manifiestos", "⚡ Bypasseando protecciones", "⚡ Descargando fragmentos", "⚡ Uniendo con FFmpeg"];
-                link.logs.push(msgs[Math.floor(Math.random()*msgs.length)]);
+                link.logs.push(msgs[Math.floor(Math.random() * msgs.length)]);
                 renderLinks();
             }, 8000);
 
             try {
                 const res = await fetch(`${BACKEND_URL}/api/download`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url: link.url, format: format, quality: quality })
                 });
                 clearInterval(pseudoInterval);
-                
-                if(res.ok) {
+
+                if (res.ok) {
                     // Recibir archivo como blob
                     const blob = await res.blob();
                     const downloadUrl = window.URL.createObjectURL(blob);
-                    
+
                     const contentDisposition = res.headers.get('Content-Disposition');
-                    let filename = `TDwnuXTw_Download.${format==='Video'?'mp4':'mp3'}`;
+                    let filename = `TDwnuXTw_Download.${format === 'Video' ? 'mp4' : 'mp3'}`;
                     if (contentDisposition) {
                         const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
                         if (filenameMatch && filenameMatch.length === 2) filename = filenameMatch[1];
@@ -212,7 +1067,7 @@
 
         function downloadFile(id) {
             const link = links.find(l => l.id === id);
-            if(link && link.downloadUrl) {
+            if (link && link.downloadUrl) {
                 const a = document.createElement('a');
                 a.href = link.downloadUrl;
                 a.download = link.filename;
@@ -225,56 +1080,207 @@
         function renderLinks() {
             const container = document.getElementById('linksContainer');
             container.innerHTML = "";
-            
+
             links.forEach(link => {
-                const isVideo = link.format !== "Audio";
-                
+                const isFormatSelected = link.format === "Video" || link.format === "Audio";
+
                 let actionBtn = "";
-                if(link.state === "ready") {
-                    actionBtn = `<button class="btn btn-pulse" onclick="processLink(${link.id})">▶ Listo para procesar</button>`;
-                } else if(link.state === "processing") {
-                    actionBtn = `<button class="btn" disabled>⚙️ Procesando...</button>`;
-                } else if(link.state === "completed") {
-                    actionBtn = `<button class="btn" onclick="downloadFile(${link.id})">💾 Guardar</button>`;
+                if (!isFormatSelected) {
+                    if (link.state === "ready") {
+                        actionBtn = `<div class="btn-disabled" style="font-size: 10px; text-align: center; color: rgba(255,255,255,0.4); padding: 5px;">⚠️ Selecciona formato</div>`;
+                    } else if (link.state === "error") {
+                        actionBtn = `<button class="btn" style="font-size: 11px; padding: 6px; background: #dc3545;" onclick="retryLink(${link.id})">🔄 Reintentar</button>`;
+                    }
                 }
 
-                const qualOptions = isVideo ? 
-                    `<option value="1080p">1080p</option><option value="720p">720p</option><option value="480p">480p</option>` : 
-                    `<option value="320 Kbps">320 Kbps</option><option value="256 Kbps">256 Kbps</option><option value="128 Kbps">128 Kbps</option>`;
+                let step3Btn = '';
+                if (link.state === 'ready') {
+                    step3Btn = `<button class="process-badge" onclick="processLink(${link.id})">▶ Procesar</button>`;
+                } else if (link.state === 'processing') {
+                    step3Btn = `<button class="process-badge processing" disabled>⚙️ Procesando...</button>`;
+                } else if (link.state === 'completed') {
+                    step3Btn = `<button class="process-badge save" onclick="downloadFile(${link.id})">💾 Guardar</button>`;
+                } else if (link.state === 'error') {
+                    step3Btn = `<button class="process-badge error" onclick="retryLink(${link.id})">🔄 Reintentar</button>`;
+                }
+
+                let vidQualsData = [];
+                const platName = link.plat.name;
+
+                if (platName === 'TikTok' || platName === 'Instagram') {
+                    vidQualsData = [{ label: "Perfeccionado (HD)", value: "1080p" }];
+                } else if (platName === 'Facebook') {
+                    vidQualsData = [
+                        { label: "HD (Definición alta)", value: "1080p" },
+                        { label: "SD (Definición estándar)", value: "480p" }
+                    ];
+                } else if (platName === 'X' || platName === 'YouTube') {
+                    vidQualsData = [
+                        { label: "1080p", value: "1080p" },
+                        { label: "720p", value: "720p" },
+                        { label: "480p", value: "480p" },
+                        { label: "360p", value: "360p" },
+                        { label: "240p", value: "240p" },
+                        { label: "144p", value: "144p" }
+                    ];
+                } else {
+                    vidQualsData = [
+                        { label: "1080p", value: "1080p" },
+                        { label: "720p", value: "720p" },
+                        { label: "480p", value: "480p" },
+                        { label: "360p", value: "360p" }
+                    ];
+                }
+
+                if (!link.vidQuality) link.vidQuality = vidQualsData[0];
+
+                const audQualsData = [
+                    { label: "320 Kbps", value: "320 Kbps" },
+                    { label: "256 Kbps", value: "256 Kbps" },
+                    { label: "128 Kbps", value: "128 Kbps" }
+                ];
+
+                if (!link.audQuality) link.audQuality = audQualsData[0];
 
                 const latestLog = link.logs[link.logs.length - 1];
                 const logEntries = link.logs.map(l => `<div class="log-entry">${l}</div>`).join('');
 
+                const durationBadge = link.duration ? `<div class="duration-badge">${link.duration}</div>` : "";
+
                 container.innerHTML += `
-                    <div class="card">
+                    <div class="card" data-id="${link.id}">
                         <div class="thumb-col">
-                            <img src="${link.thumb}" alt="Thumbnail">
+                            <img src="${link.thumb}" alt="Thumbnail" referrerpolicy="no-referrer">
+                            ${durationBadge}
                         </div>
                         <div class="info-col">
+                            <div class="platform-tag">
+                                ${link.plat.icon.startsWith('http') ? `<img src="${link.plat.icon}" class="platform-logo" referrerpolicy="no-referrer" alt="logo">` : link.plat.icon}
+                                <span class="${link.plat.textClass}">${link.plat.name}</span>
+                            </div>
                             <div class="title">${link.title}</div>
-                            <div class="badge ${link.plat.class}">${link.plat.icon} ${link.plat.name}</div>
-                            <div class="url">${link.url}</div>
+                            <a href="${link.url}" target="_blank" class="url ${link.plat.class}">${link.url}</a>
+                        </div>
+                        <div class="logs-wrapper ${link.state === 'completed' ? 'is-completed' : ''}">
+                            ${link.infoError ? `<button class="btn-refresh-info" onclick="fetchLinkInfo(${link.id})" title="Reintentar extraer información">🔄</button>` : ''}
+                            <details>
+                                <summary>${latestLog}</summary>
+                                <div class="logs-content">${logEntries}</div>
+                            </details>
                         </div>
                         <div class="controls-col">
                             <div class="radio-group">
-                                <label><input type="radio" name="fmt_${link.id}" value="Video" ${isVideo ? 'checked' : ''} onchange="toggleFormat(${link.id}, 'Video')"> 🔴 Video (MP4)</label>
-                                <label><input type="radio" name="fmt_${link.id}" value="Audio" ${!isVideo ? 'checked' : ''} onchange="toggleFormat(${link.id}, 'Audio')"> ⚪ Audio (MP3)</label>
+                                <div class="option-row ${link.format === 'Video' && !link.isNewSelection ? 'deployed' : ''}" data-type="Video">
+                                    <label>
+                                        <span class="radio-icon">🔴</span>
+                                        <span class="radio-text">Video</span>
+                                        <span class="radio-ext">MP4</span>
+                                        <input type="radio" name="fmt_${link.id}" value="Video" ${link.format === 'Video' ? 'checked' : ''} onchange="toggleFormat(${link.id}, 'Video')">
+                                    </label>
+                                    <div class="ladder-step step-1">
+                                        <div class="custom-dropdown ${vidQualsData.length === 1 ? 'no-arrow' : ''}" id="dropdown_v_${link.id}">
+                                            <div class="dropdown-trigger" ${vidQualsData.length > 1 ? `onclick="toggleDropdown(${link.id}, 'Video')"` : ''} data-value="${link.vidQuality.value}">${link.vidQuality.label}</div>
+                                            ${vidQualsData.length > 1 ? `
+                                            <div class="dropdown-menu">
+                                                ${vidQualsData.map(q => `<div class="dropdown-item" onclick="selectOption(${link.id}, 'Video', '${q.label}', '${q.value}')">${q.label}</div>`).join('')}
+                                            </div>
+                                            ` : ''}
+                                        </div>
+                                        <div class="ladder-step step-2">
+                                            ${link.rawDuration ? `<div class="size-badge" id="size_badge_Video_${link.id}">${estimateSize(link.rawDuration, 'Video', link.vidQuality.value, link.plat.name)}</div>` : ''}
+                                            <div class="ladder-step step-3">
+                                                ${step3Btn}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="option-row ${link.format === 'Audio' && !link.isNewSelection ? 'deployed' : ''}" data-type="Audio">
+                                    <label>
+                                        <span class="radio-icon">⚪</span>
+                                        <span class="radio-text">Audio</span>
+                                        <span class="radio-ext">MP3</span>
+                                        <input type="radio" name="fmt_${link.id}" value="Audio" ${link.format === 'Audio' ? 'checked' : ''} onchange="toggleFormat(${link.id}, 'Audio')">
+                                    </label>
+                                    <div class="ladder-step step-1">
+                                        <div class="custom-dropdown" id="dropdown_a_${link.id}">
+                                            <div class="dropdown-trigger" onclick="toggleDropdown(${link.id}, 'Audio')" data-value="${link.audQuality.value}">${link.audQuality.label}</div>
+                                            <div class="dropdown-menu">
+                                                ${audQualsData.map(q => `<div class="dropdown-item" onclick="selectOption(${link.id}, 'Audio', '${q.label}', '${q.value}')">${q.label}</div>`).join('')}
+                                            </div>
+                                        </div>
+                                        <div class="ladder-step step-2">
+                                            ${link.rawDuration ? `<div class="size-badge" id="size_badge_Audio_${link.id}">${estimateSize(link.rawDuration, 'Audio', link.audQuality.value, link.plat.name)}</div>` : ''}
+                                            <div class="ladder-step step-3">
+                                                ${step3Btn}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="action-col">
-                            <div class="logs-wrapper">
-                                <details>
-                                    <summary>${latestLog}</summary>
-                                    <div class="logs-content">${logEntries}</div>
-                                </details>
-                            </div>
                             ${actionBtn}
-                            <select id="q_${link.id}">${qualOptions}</select>
                         </div>
                     </div>
                 `;
             });
+
+            // Trigger solo para la nueva selección
+            setTimeout(() => {
+                links.forEach(link => {
+                    if (link.isNewSelection && link.format) {
+                        const el = document.querySelector(`.card[data-id="${link.id}"] .option-row[data-type="${link.format}"]`);
+                        if (el) {
+                            el.classList.add('deployed');
+                            link.isNewSelection = false; // Consumir la marca
+                        }
+                    }
+                });
+            }, 50);
         }
+
+        function toggleDropdown(id, type) {
+            const dropdown = document.querySelector(`.card[data-id="${id}"] .option-row[data-type="${type}"] .custom-dropdown`);
+            const card = dropdown.closest('.card');
+
+            // Cerrar otros
+            document.querySelectorAll('.custom-dropdown').forEach(d => {
+                if (d !== dropdown) d.classList.remove('open');
+            });
+            document.querySelectorAll('.card').forEach(c => {
+                if (c !== card) c.style.zIndex = "1";
+            });
+
+            dropdown.classList.toggle('open');
+            card.style.zIndex = dropdown.classList.contains('open') ? "9999" : "1";
+        }
+
+        function selectOption(id, type, label, value) {
+            const link = links.find(l => l.id === id);
+            if (!link) return;
+
+            if (type === 'Video') {
+                link.vidQuality = { label: label, value: value };
+            } else {
+                link.audQuality = { label: label, value: value };
+            }
+
+            if (link.state === 'completed' || link.state === 'error') {
+                link.state = 'ready';
+                link.downloadUrl = null;
+            }
+
+            renderLinks();
+        }
+
+        // Cerrar dropdowns al hacer clic fuera
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-dropdown')) {
+                document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+                document.querySelectorAll('.card').forEach(c => c.style.zIndex = "1");
+            }
+        });
     </script>
 </body>
+
 </html>
