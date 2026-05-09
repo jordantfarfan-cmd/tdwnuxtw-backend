@@ -1,5 +1,5 @@
 streamlit
-git+https://github.com/yt-dlp/yt-dlp.git@master
+https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
 fastapi
 uvicorn
 requests
