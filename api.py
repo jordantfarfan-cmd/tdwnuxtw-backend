@@ -233,6 +233,18 @@ def api_info(req: DownloadRequest):
     
     # Usar cookies si existen (importante para evitar bloqueos)
     if os.path.exists('temp_cookies.txt'):
+        try:
+            # Asegurar que el archivo tenga formato UNIX (LF) y no Windows (CRLF)
+            # Esto evita que yt-dlp en Linux (Render) falle al parsear el Netscape file
+            with open('temp_cookies.txt', 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+            if '\r' in content:
+                with open('temp_cookies.txt', 'w', encoding='utf-8', newline='\n') as f:
+                    f.write(content.replace('\r\n', '\n').replace('\r', '\n'))
+                print("Cookies: Convertido a formato UNIX (LF) exitosamente.")
+        except Exception as e:
+            print(f"Error al limpiar cookies: {e}")
+            
         ydl_opts['cookiefile'] = 'temp_cookies.txt'
     
     try:
