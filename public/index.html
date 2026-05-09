@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDwnuXTw ® | Adquisidor Multiplataforma</title>
+    <title>TDwnuXTw ® | Adquisidor de videos multiplataforma</title>
+    <link rel="icon" href="https://i.imgur.com/5Fxk9yl.png" type="image/png">
+
 
     <style>
         * {
@@ -58,69 +60,180 @@
 
         .main-layout {
             display: flex;
-            justify-content: center;
-            max-width: 1400px;
-            margin: 0 auto;
-            gap: 20px;
-            padding: 20px;
+            /* Cambiamos a flex-start para que se pegue más a la izquierda */
+            justify-content: flex-start;
+            max-width: 1600px;
+            /* Añadimos un margen izquierdo controlado */
+            margin: 0 40px;
+            gap: 12px;
+            padding: 20px 0;
         }
 
-        .sidebar-ads {
+        .col-lateral {
             flex: 0 0 160px;
             min-width: 160px;
-            position: sticky;
-            top: 20px;
-            height: fit-content;
+            align-self: stretch;
+            display: flex;
+            flex-direction: column;
+            /* Centramos el anuncio verticalmente respecto a toda la app */
+            justify-content: center;
+            position: relative;
         }
 
-        .ad-placeholder {
-            width: 100%;
+        .caja-promo {
+            width: 160px;
             min-height: 600px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px dashed rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 10px;
-            text-transform: uppercase;
+            overflow: hidden;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+
+        .caja-promo:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Imagen de prueba local */
+        .img-promo-local {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .is-local-dev .img-promo-local {
+            display: block;
+        }
+
+        .is-local-dev .caja-promo::after {
+            content: "ESPACIO PUBLICITARIO";
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 800;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             letter-spacing: 1px;
+            pointer-events: none;
         }
 
         .container {
             flex: 1;
-            max-width: 1000px;
+            /* Ensanchamos el campo de la interfaz central */
+            max-width: 1150px;
             margin: 0;
         }
 
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            /* Forzamos a que ambos lados tengan la misma altura */
+            align-items: stretch;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .platforms-supported {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            /* Ajuste milimétrico para encajar entre las líneas del título y subtítulo */
+            margin-top: 4px;
+            margin-bottom: 4px;
+            padding-right: 15px;
+        }
+
+        .platform-tag-header {
+            font-size: 0.58rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .platform-tag-header::after {
+            content: " |";
+            font-weight: 800;
+            margin-left: 6px;
+            /* El color se heredará de la clase principal */
+        }
+
+        .tag-yt {
+            color: #FF0000 !important;
+        }
+
+        .tag-fb {
+            color: #1877F2 !important;
+        }
+
+        .tag-ig {
+            color: #E1306C !important;
+        }
+
+        .tag-tk {
+            color: #00f2ea !important;
+        }
+
+        .tag-x {
+            color: #ffffff !important;
+        }
+
+        .tag-li {
+            color: #0a66c2 !important;
+        }
+
+        .tag-pin {
+            color: #e60023 !important;
+        }
+
+        .platform-tag-header:hover {
+            filter: brightness(1.3);
+            text-shadow: 0 0 10px currentColor;
+        }
+
         h1 {
-            text-align: center;
+            text-align: left;
             color: #00d2ff;
             font-weight: 800;
             margin-bottom: 5px;
             font-size: 2.5rem;
+            padding-left: 15px;
         }
 
         h3 {
-            text-align: center;
+            text-align: left;
             color: #ffffff;
             font-weight: 400;
             margin-top: 0;
-            margin-bottom: 30px;
-            font-size: 1.2rem;
-            border-left: 2px solid rgba(255, 255, 255, 0.2);
-            border-right: 2px solid rgba(255, 255, 255, 0.2);
-            display: inline-block;
-            padding: 0 15px;
-            left: 50%;
-            position: relative;
-            transform: translateX(-50%);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-left: 3px solid #00d2ff;
+            padding-left: 20px;
+            margin-left: 15px;
+            opacity: 0.8;
         }
 
         .input-group {
-            margin-top: 30px;
+            margin-top: 10px;
             background: rgba(255, 255, 255, 0.03);
             padding: 20px;
             border-radius: 15px;
@@ -274,6 +387,18 @@
             color: #ffffff !important;
         }
 
+        .bg-linkedin {
+            background: rgba(2, 102, 200, 0.25);
+            border: 1px solid #0266c8;
+            color: #ffffff !important;
+        }
+
+        .bg-pinterest {
+            background: rgba(255, 108, 119, 0.25);
+            border: 1px solid #ff6c77;
+            color: #ffffff !important;
+        }
+
         /* Text Gradients for Platform Names */
         .text-youtube {
             background: linear-gradient(to right, #FF0000, #FFFFFF);
@@ -301,6 +426,18 @@
 
         .text-x {
             background: linear-gradient(to right, #FFFFFF, #777777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-linkedin {
+            background: linear-gradient(to right, #0266c8, #00a0dc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-pinterest {
+            background: linear-gradient(to right, #ff6c77, #ffb0b9);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -348,13 +485,31 @@
             overflow: visible;
         }
 
-        .ladder-step.step-1 { transition-delay: 0s; margin-left: -10px; }
-        .ladder-step.step-2 { transition-delay: 0.1s; }
-        .ladder-step.step-3 { transition-delay: 0.2s; }
+        .ladder-step.step-1 {
+            transition-delay: 0s;
+            margin-left: -10px;
+        }
 
-        .option-row.deployed .ladder-step.step-1 { margin-left: -1px; max-width: 300px; }
-        .option-row.deployed .ladder-step.step-2 { max-width: 100px; }
-        .option-row.deployed .ladder-step.step-3 { max-width: 150px; }
+        .ladder-step.step-2 {
+            transition-delay: 0.1s;
+        }
+
+        .ladder-step.step-3 {
+            transition-delay: 0.2s;
+        }
+
+        .option-row.deployed .ladder-step.step-1 {
+            margin-left: -1px;
+            max-width: 300px;
+        }
+
+        .option-row.deployed .ladder-step.step-2 {
+            max-width: 100px;
+        }
+
+        .option-row.deployed .ladder-step.step-3 {
+            max-width: 150px;
+        }
 
         .process-badge {
             font-size: 9px;
@@ -373,31 +528,37 @@
             text-transform: uppercase;
             margin-left: 8px;
         }
+
         .process-badge:hover {
             background: rgba(40, 167, 69, 0.5);
             box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
         }
+
         .process-badge.save {
             background: rgba(0, 123, 255, 0.2);
             border-color: rgba(0, 123, 255, 0.4);
             color: #66b2ff;
         }
+
         .process-badge.save:hover {
             background: rgba(0, 123, 255, 0.5);
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
             color: #fff;
         }
+
         .process-badge.processing {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.2);
             color: #ccc;
             cursor: not-allowed;
         }
+
         .process-badge.error {
             background: rgba(220, 53, 69, 0.2);
             border-color: rgba(220, 53, 69, 0.4);
             color: #ff4d4d;
         }
+
         .process-badge.error:hover {
             background: rgba(220, 53, 69, 0.4);
             color: #fff;
@@ -677,7 +838,7 @@
             position: relative;
             z-index: 100;
         }
-        
+
         .btn-refresh-info {
             background: rgba(220, 53, 69, 0.1);
             border: 1px solid rgba(220, 53, 69, 0.3);
@@ -694,6 +855,7 @@
             flex-shrink: 0;
             padding: 0;
         }
+
         .btn-refresh-info:hover {
             background: rgba(220, 53, 69, 0.3);
             box-shadow: 0 0 5px rgba(220, 53, 69, 0.4);
@@ -777,35 +939,50 @@
 
 <body>
     <div class="main-layout">
-        <div class="sidebar-ads">
-            <div class="ad-placeholder">
-                <span style="margin-bottom: 10px;">Publicidad Adsterra</span>
-                <p style="font-size: 8px; opacity: 0.5; margin: 0 10px; text-align: center;">Pega aquí tu código de banner (160x600)</p>
-                
+        <div class="col-lateral">
+            <div class="caja-promo">
+                <!-- Imagen neutra para evitar bloqueos de AdBlockers en local -->
+                <img src="https://picsum.photos/160/600?grayscale" class="img-promo-local" alt="Preview">
+
                 <!-- ESPACIO PARA TU CÓDIGO DE ADSTERRA -->
                 <div id="adsterra-banner">
                     <script type="text/javascript">
                         atOptions = {
-                            'key' : '57216caf2adec9b4b95f617aea56f46b',
-                            'format' : 'iframe',
-                            'height' : 600,
-                            'width' : 160,
-                            'params' : {}
+                            'key': '57216caf2adec9b4b95f617aea56f46b',
+                            'format': 'iframe',
+                            'height': 600,
+                            'width': 160,
+                            'params': {}
                         };
                     </script>
-                    <script type="text/javascript" src="https://www.highperformanceformat.com/57216caf2adec9b4b95f617aea56f46b/invoke.js"></script>
+                    <script type="text/javascript"
+                        src="https://www.highperformanceformat.com/57216caf2adec9b4b95f617aea56f46b/invoke.js"></script>
                 </div>
             </div>
         </div>
 
         <div class="container">
-            <h1>TDwnuXTw ®</h1>
-            <h3>Adquisidor de videos multiplataforma</h3>
+            <div class="header-row">
+                <div class="title-group">
+                    <h1>TDwnuXTw ®</h1>
+                    <h3>Adquisidor de videos multiplataforma</h3>
+                </div>
+                <div class="platforms-supported">
+                    <span class="platform-tag-header tag-yt">YouTube</span>
+                    <span class="platform-tag-header tag-fb">Facebook</span>
+                    <span class="platform-tag-header tag-ig">Instagram</span>
+                    <span class="platform-tag-header tag-tk">TikTok</span>
+                    <span class="platform-tag-header tag-x">X</span>
+                    <span class="platform-tag-header tag-li">LinkedIn</span>
+                    <span class="platform-tag-header tag-pin">Pinterest</span>
+                </div>
+            </div>
 
             <div id="linksContainer"></div>
 
             <div class="input-group">
-                <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #ccc;">🔗 Pega tus enlaces aquí (uno o varios):</p>
+                <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #ccc;">🔗 Pega tus enlaces aquí (uno o varios):
+                </p>
                 <textarea id="urlInput" placeholder="https://..." oninput="autoResize(this)"
                     onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); addLink(); }"></textarea>
             </div>
@@ -822,16 +999,25 @@
 
         // Manejar el pegado para separar links visualmente con saltos de línea
         document.addEventListener('DOMContentLoaded', () => {
+            // --- DESPERTADOR AUTOMÁTICO (WAKE UP CALL) ---
+            // Enviamos una señal al backend apenas carga la página para que Render empiece a despertar.
+            console.log("🚀 Despertando servidor en Render...");
+            fetch(`${BACKEND_URL}/api/health`).then(r => r.json()).then(data => {
+                console.log("✅ Servidor activo:", data.message);
+            }).catch(e => console.log("⏳ Servidor despertando o desconectado..."));
+
             const input = document.getElementById('urlInput');
-            input.addEventListener('paste', function (e) {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text');
-                const formatted = text.split(/[\s,]+/).filter(u => u.trim()).join('\n');
-                const start = this.selectionStart;
-                const end = this.selectionEnd;
-                this.value = this.value.substring(0, start) + formatted + this.value.substring(end);
-                autoResize(this);
-            });
+            if (input) {
+                input.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text');
+                    const formatted = text.split(/[\s,]+/).filter(u => u.trim()).join('\n');
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+                    this.value = this.value.substring(0, start) + formatted + this.value.substring(end);
+                    autoResize(this);
+                });
+            }
         });
 
         function getPlatformInfo(url) {
@@ -841,11 +1027,14 @@
             if (u.includes('instagram.com')) return { class: 'bg-instagram', textClass: 'text-instagram', icon: 'https://i.imgur.com/dRcDOwS.png', name: 'Instagram' };
             if (u.includes('tiktok.com')) return { class: 'bg-tiktok', textClass: 'text-tiktok', icon: 'https://i.imgur.com/LFzL7OA.png', name: 'TikTok' };
             if (u.includes('twitter.com') || u.includes('x.com')) return { class: 'bg-x', textClass: 'text-x', icon: 'https://i.imgur.com/QVitgr8.png', name: 'X' };
+            if (u.includes('linkedin.com')) return { class: 'bg-linkedin', textClass: 'text-linkedin', icon: 'https://imgur.com/rsHlQcF.png', name: 'LinkedIn' };
+            if (u.includes('pinterest.com') || u.includes('pin.it')) return { class: 'bg-pinterest', textClass: 'text-pinterest', icon: 'https://imgur.com/K1MD8Gr.png', name: 'Pinterest' };
             return { class: 'bg-youtube', textClass: '', icon: '🌐', name: 'Web' }; // Default
         }
 
         // Detectar si estamos en local o en producción
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (isLocal) document.body.classList.add('is-local-dev');
         const BACKEND_URL = isLocal ? 'http://127.0.0.1:8000' : 'https://tdwnuxtw-backend.onrender.com';
 
         function formatDuration(sec) {
@@ -993,7 +1182,7 @@
 
                 links[index].format = format;
                 links[index].isNewSelection = true; // Marcar para animar solo este cambio
-                
+
                 if (links[index].state === 'completed' || links[index].state === 'error') {
                     links[index].state = 'ready';
                     links[index].downloadUrl = null;
@@ -1033,7 +1222,7 @@
             try {
                 const res = await fetch(`${BACKEND_URL}/api/download`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url: link.url, format: format, quality: quality })
+                    body: JSON.stringify({ url: link.url, format: format, quality: quality, title: link.title })
                 });
                 clearInterval(pseudoInterval);
 
@@ -1045,8 +1234,15 @@
                     const contentDisposition = res.headers.get('Content-Disposition');
                     let filename = `TDwnuXTw_Download.${format === 'Video' ? 'mp4' : 'mp3'}`;
                     if (contentDisposition) {
-                        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
-                        if (filenameMatch && filenameMatch.length === 2) filename = filenameMatch[1];
+                        const filenameStarMatch = contentDisposition.match(/filename\*=utf-8''([^;]+)/i);
+                        if (filenameStarMatch && filenameStarMatch[1]) {
+                            filename = decodeURIComponent(filenameStarMatch[1]);
+                        } else {
+                            const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/i);
+                            if (filenameMatch && filenameMatch[1]) {
+                                filename = filenameMatch[1];
+                            }
+                        }
                     }
 
                     link.state = "completed";
@@ -1085,11 +1281,13 @@
                 const isFormatSelected = link.format === "Video" || link.format === "Audio";
 
                 let actionBtn = "";
-                if (!isFormatSelected) {
-                    if (link.state === "ready") {
-                        actionBtn = `<div class="btn-disabled" style="font-size: 10px; text-align: center; color: rgba(255,255,255,0.4); padding: 5px;">⚠️ Selecciona formato</div>`;
-                    } else if (link.state === "error") {
-                        actionBtn = `<button class="btn" style="font-size: 11px; padding: 6px; background: #dc3545;" onclick="retryLink(${link.id})">🔄 Reintentar</button>`;
+                if (!link.infoError) {
+                    if (!isFormatSelected) {
+                        if (link.state === "ready") {
+                            actionBtn = `<div class="btn-disabled" style="font-size: 10px; text-align: center; color: rgba(255,255,255,0.4); padding: 5px;">⚠️ Selecciona formato</div>`;
+                        } else if (link.state === "error") {
+                            actionBtn = `<button class="btn" style="font-size: 11px; padding: 6px; background: #dc3545;" onclick="retryLink(${link.id})">🔄 Reintentar</button>`;
+                        }
                     }
                 }
 
@@ -1169,6 +1367,7 @@
                             </details>
                         </div>
                         <div class="controls-col">
+                            ${link.infoError ? '' : `
                             <div class="radio-group">
                                 <div class="option-row ${link.format === 'Video' && !link.isNewSelection ? 'deployed' : ''}" data-type="Video">
                                     <label>
@@ -1217,6 +1416,7 @@
                                     </div>
                                 </div>
                             </div>
+                            `}
                         </div>
                         <div class="action-col">
                             ${actionBtn}

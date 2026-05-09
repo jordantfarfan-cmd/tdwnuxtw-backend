@@ -205,7 +205,7 @@ def descargar_yt_dlp(opciones, dl_url):
         return filename, info.get('title', 'Video')
 
 @app.post("/api/info")
-async def api_info(req: DownloadRequest):
+def api_info(req: DownloadRequest):
     raw_url = req.url
     is_fb = is_facebook(raw_url)
     
@@ -313,7 +313,7 @@ async def api_info(req: DownloadRequest):
         }
 
 @app.post("/api/download")
-async def api_download(req: DownloadRequest, bg_tasks: BackgroundTasks):
+def api_download(req: DownloadRequest, bg_tasks: BackgroundTasks):
     if not os.path.exists('downloads'): os.makedirs('downloads')
     
     raw_url = req.url

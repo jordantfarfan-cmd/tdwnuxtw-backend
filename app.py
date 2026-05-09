@@ -11,7 +11,7 @@ import threading
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(
     page_title="TDwnuXTw ® | Adquisidor de videos multiplataforma",
-    page_icon="🚀",
+    page_icon="https://i.imgur.com/5Fxk9yl.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -97,6 +97,8 @@ st.markdown("""
     .bg-tiktok { background-color: rgba(254, 46, 87, 0.15) !important; border: 1px solid #fe2e57 !important; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%; color: #2cf0e5 !important; }
     .bg-twitter { background-color: #0a0a0a !important; border: 1px solid #555; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
     .bg-instagram { background-color: rgba(110, 77, 155, 0.15) !important; border: 1px solid #6e4d9b !important; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%; color: #ecaf4c !important; }
+    .bg-linkedin { background-color: rgba(2, 102, 200, 0.2) !important; border: 1px solid #0266c8 !important; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%; color: white !important; }
+    .bg-pinterest { background-color: rgba(255, 108, 119, 0.2) !important; border: 1px solid #ff6c77 !important; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%; color: white !important; }
     .bg-other { background-color: #2a2a2a !important; border: 1px solid #777; border-radius:8px; padding:6px 10px; display:inline-block; overflow:hidden; width: fit-content; max-width: 100%;}
 
     /* Text Gradients for Platform Names */
@@ -126,6 +128,18 @@ st.markdown("""
     }
     .text-twitter {
         background: linear-gradient(to right, #FFFFFF, #777777);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.9em;
+    }
+    .text-linkedin {
+        background: linear-gradient(to right, #0266c8, #00a0dc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 0.9em;
+    }
+    .text-pinterest {
+        background: linear-gradient(to right, #ff6c77, #ffb0b9);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 0.9em;
@@ -334,6 +348,8 @@ def get_platform(url):
     if 'twitter.com' in u or 'x.com' in u: return 'twitter', '🐦', 'text-twitter', 'X'
     if 'tiktok.com' in u: return 'tiktok', '🎵', 'text-tiktok', 'TikTok'
     if 'instagram.com' in u: return 'instagram', '📸', 'text-instagram', 'Instagram'
+    if 'linkedin.com' in u: return 'linkedin', '🔗', 'text-linkedin', 'LinkedIn'
+    if 'pinterest.com' in u or 'pin.it' in u: return 'pinterest', '📌', 'text-pinterest', 'Pinterest'
     return 'other', '🌐', '', 'Web'
 
 def add_link():
@@ -368,6 +384,18 @@ def add_link():
                                 title = title.replace('Video by', 'Video de Instagram de')
                             elif title == 'Video':
                                 title = 'Video de Instagram'
+                        elif plat == 'pinterest':
+                            if desc:
+                                title = desc
+                            else:
+                                import re
+                                match_id = re.search(r'(\d{8,})', url)
+                                if match_id:
+                                    title = f"Video de Pinterest {match_id.group(1)}"
+                                elif "Pinterest video" in title:
+                                    title = title.replace("Pinterest video #", "Video de Pinterest ")
+                                else:
+                                    title = "Video de Pinterest"
                                 
                         if title:
                             title = title.replace('\n', ' ').replace('\r', ' ')
@@ -415,6 +443,8 @@ platform_styles = {
     'tiktok': {'bg': 'rgba(254, 46, 87, 0.15)', 'border': '#fe2e57'},
     'twitter': {'bg': '#0a0a0a', 'border': '#555'},
     'instagram': {'bg': 'rgba(110, 77, 155, 0.15)', 'border': '#6e4d9b'},
+    'linkedin': {'bg': 'rgba(2, 102, 200, 0.2)', 'border': '#0266c8'},
+    'pinterest': {'bg': 'rgba(255, 108, 119, 0.2)', 'border': '#ff6c77'},
     'other': {'bg': '#2a2a2a', 'border': '#777'}
 }
 
