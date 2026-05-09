@@ -209,6 +209,21 @@ def api_info(req: DownloadRequest):
     raw_url = req.url
     is_fb = is_facebook(raw_url)
     
+    # Fast-path ultrarrápido para YouTube usando oEmbed (evita bloqueos de Render al obtener info)
+    if "youtube" in raw_url.lower() or "youtu.be" in raw_url.lower():
+        try:
+            oembed_res = requests.get(f"https://www.youtube.com/oembed?url={urllib.parse.quote(raw_url)}&format=json", timeout=4)
+            if oembed_res.status_code == 200:
+                data = oembed_res.json()
+                return {
+                    "title": data.get("title", "Video de YouTube"),
+                    "thumbnail": data.get("thumbnail_url", "https://placehold.co/150x100/000000/FFFFFF/png?text=No+Thumb"),
+                    "duration": 0,
+                    "status": "success"
+                }
+        except:
+            pass # Si falla, continúa con el método tradicional de yt-dlp
+            
     # Sanitizar URL si es Facebook
     if is_fb:
         raw_url = sanitize_facebook_url(raw_url)
