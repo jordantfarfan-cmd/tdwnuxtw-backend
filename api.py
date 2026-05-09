@@ -228,8 +228,6 @@ def api_info(req: DownloadRequest):
             'Sec-Fetch-Dest': 'video', 
             'Origin': 'https://www.facebook.com'
         }
-    elif "youtube" in raw_url or "youtu.be" in raw_url:
-        ydl_opts['extractor_args'] = {'youtube': {'player_client': ['android', 'ios']}}
     
     # Usar cookies si existen (importante para evitar bloqueos)
     if os.path.exists('temp_cookies.txt'):
@@ -367,9 +365,6 @@ def api_download(req: DownloadRequest, bg_tasks: BackgroundTasks):
     try:
         if is_fb:
             ydl_opts['http_headers'].update({'Sec-Fetch-Dest': 'video', 'Origin': 'https://www.facebook.com'})
-        elif "youtube" in raw_url or "youtu.be" in raw_url:
-            if 'http_headers' in ydl_opts: del ydl_opts['http_headers']
-            ydl_opts['extractor_args'] = {'youtube': {'player_client': ['android', 'ios']}}
             
         # Nivel 1: Intento directo
         try:
